@@ -213,6 +213,25 @@ main{max-width:1120px}h1{font-weight:900;font-size:clamp(30px,6vw,58px);line-hei
 @media(max-width:570px){.rpg-header{font-size:10px;padding:9px}.rpg-shell{margin:8px 3px 18px}.rpg-controls{gap:14px;padding:12px}.rpg-dpad{grid-template-columns:repeat(3,43px);grid-template-rows:repeat(3,43px)}.rpg-help{font-size:11px}.rpg-dialog{min-height:108px}.rpg-tile .rpg-label{display:none}.rpg-tile .rpg-marker{font-size:clamp(11px,3.5vw,18px)}}
 @media(prefers-reduced-motion:reduce){.rpg-hero{transition:none}}
 </style>
+
+<style id="rpg-npc-treasure-style">
+.rpg-tile.npc-tile,.rpg-tile.chest-tile{background:#dfc58d}
+.rpg-tile .rpg-object{font-size:clamp(11px,2.5vw,25px);line-height:1;position:absolute;z-index:2;filter:drop-shadow(1px 2px #283b49);pointer-events:none}
+.rpg-tile .rpg-object.npc{animation:npc-bob 1.1s steps(2,end) infinite}
+.rpg-tile .rpg-object.chest{filter:drop-shadow(2px 2px #593e22)}
+.rpg-tile .rpg-object.opened{opacity:.55}
+@keyframes npc-bob{50%{transform:translateY(-2px)}}
+.rpg-interact{background:#b4dba5!important}
+.rpg-interact:disabled{opacity:.5;background:#ccc!important;cursor:not-allowed}
+.rpg-collection{border-top:3px solid #25374f;background:#fff9e9;padding:13px 16px}
+.rpg-collection-title{display:flex;justify-content:space-between;gap:8px;align-items:center;font-weight:900;font-size:14px;margin-bottom:8px}
+.rpg-treasure-list{display:flex;gap:6px;flex-wrap:wrap}
+.rpg-treasure-chip{border:2px solid #25374f;background:#f0e4cb;padding:5px 8px;font-size:11px;font-weight:700}
+.rpg-treasure-chip.owned{background:#f6d579}
+.rpg-dialog strong{display:block}
+.rpg-story-count{font-size:11px;color:#715a3e;margin-top:5px}
+@media(prefers-reduced-motion:reduce){.rpg-tile .rpg-object.npc{animation:none}}
+</style>
 </head>
 <body>
 <header class="topbar">
@@ -274,10 +293,12 @@ main{max-width:1120px}h1{font-weight:900;font-size:clamp(30px,6vw,58px);line-hei
   <div class="rpg-interface">
    <div class="rpg-dialog" aria-live="polite" id="rpg-dialog"><strong>冒險開始！</strong><p>用方向鍵移動，走到地圖上的關卡地標就能探索行程。</p></div>
    <div class="rpg-actions">
+    <button type="button" id="rpg-interact" class="rpg-interact" disabled>對話／開寶箱 ✦</button>
     <button type="button" id="rpg-enter" disabled>進入當日行程 ▶</button>
     <button type="button" id="rpg-reset">↻ 回到起點</button>
    </div>
   </div>
+  <div class="rpg-collection"><div class="rpg-collection-title"><span>🎒 冒險寶物收藏</span><span id="treasure-count">0 / 8</span></div><div class="rpg-treasure-list" id="treasure-list"></div></div>
   <div class="rpg-controls" aria-label="移動控制">
    <div class="rpg-dpad">
     <button type="button" class="rpg-up" data-move="up" aria-label="向上">▲</button>
@@ -285,7 +306,7 @@ main{max-width:1120px}h1{font-weight:900;font-size:clamp(30px,6vw,58px);line-hei
     <button type="button" class="rpg-down" data-move="down" aria-label="向下">▼</button>
     <button type="button" class="rpg-right" data-move="right" aria-label="向右">▶</button>
    </div>
-   <div class="rpg-help"><strong>🎮 操作方法</strong><p>手機：點十字鍵或地圖上的道路格。<br>電腦：先點地圖，再按方向鍵／WASD。<br>接近地標後可查看關卡及開啟行程。</p></div>
+   <div class="rpg-help"><strong>🎮 操作方法</strong><p>手機：點十字鍵或地圖上的道路格。<br>電腦：先點地圖，再按方向鍵／WASD。<br>接近地標可開啟行程；靠近人物或寶箱可按互動鍵。</p></div>
   </div>
  </div>
  <p class="world-hint">地圖是遊戲化示意，不是實際公路比例；自駕請使用下方 Google Maps 路線。旅程徽章需自行確認完成後領取。</p>
@@ -679,6 +700,51 @@ const regionNodes=[
  {x:5,y:7,icon:"🌃",name:"北九州",description:"DAY 7｜太宰府、福岡還車與皿倉山夜景。"},
  {x:2,y:9,icon:"✈️",name:"返航",description:"DAY 8｜博多採買與福岡機場返台。"}
 ];
+const rpgNpcs=[{"x":2,"y":1,"name":"博多旅人","icon":"🧑‍🎒","dialog":["歡迎來到九州！先到櫛田神社感受博多文化，再去大濠公園散步吧。","第一天不用開車，博多附近搭地鐵與步行更輕鬆。"]},{"x":6,"y":2,"name":"溫泉嚮導","icon":"🧖","dialog":["黑川溫泉最適合放慢腳步。入湯手形可用於指定旅館的露天浴池。","冬季山區道路容易結冰，先確認雪胎與天候再出發。"]},{"x":10,"y":2,"name":"阿蘇研究員","icon":"👩‍🔬","dialog":["阿蘇火山擁有寬廣的破火山口地形，大觀峰是觀賞阿蘇五岳的好地方。","草千里風很大，帶上保暖外套；火山口是否開放要以現場管制為準。"]},{"x":12,"y":3,"name":"渡輪船長","icon":"🧑‍✈️","dialog":["從熊本港搭汽車渡輪去島原，可以欣賞有明海風景。","元旦班次、車位與報到截止時間必須事先確認；別直接照遊戲地圖開車喔。"]},{"x":12,"y":7,"name":"長崎導覽員","icon":"🧑‍🏫","dialog":["出島曾是日本對外貿易的重要窗口之一，眼鏡橋倒映在水面上很有特色。","長崎的山坡與港灣交織成漂亮夜景，稻佐山是經典觀景點。"]},{"x":8,"y":8,"name":"嬉野茶師","icon":"🧑‍🌾","dialog":["歡迎來嬉野！這裡以溫泉、嬉野茶和溫泉湯豆腐聞名。","如果今天走累了，可以略過武雄景點，早點進旅館泡湯。"]},{"x":4,"y":7,"name":"夜景探險家","icon":"🧑‍🚀","dialog":["皿倉山能俯瞰北九州市區的燈火，是這趟旅行的夜景任務。","纜車、接駁車與回程班次要在出發前確認，山頂很冷！"]},{"x":3,"y":9,"name":"返航提醒員","icon":"🧑‍✈️","dialog":["辛苦了！最後一天回博多採買伴手禮，記得留足機場報到時間。","福岡機場國際線與國內線航廈不同，先確認前往國際線的交通方式。"]}];
+const rpgChests=[{"x":3,"y":1,"name":"博多風物箱","item":"博多文化手札","tip":"櫛田神社與博多祇園山笠祭典關係密切，是認識博多的重要地點。"},{"x":7,"y":2,"name":"由布院風景箱","item":"金鱗湖晨霧筆記","tip":"金鱗湖冬季清晨偶爾能看到薄霧，是否出現取決於氣溫與天氣。"},{"x":11,"y":2,"name":"火山探險箱","item":"草千里觀察卡","tip":"草千里以草地與池塘景觀聞名，冬季天氣多變，注意風勢與步道狀況。"},{"x":13,"y":5,"name":"渡海準備箱","item":"渡輪提醒卡","tip":"汽車渡輪通常需預留報到時間；2027 年元旦請以營運公司正式公告為準。"},{"x":11,"y":8,"name":"長崎歷史箱","item":"出島觀察卡","tip":"出島是江戶時期日本對外貿易的重要窗口之一，現在設有復原建築展示。"},{"x":7,"y":8,"name":"溫泉療癒箱","item":"嬉野溫泉筆記","tip":"嬉野以溫泉及茶文化著名，溫泉湯豆腐也是當地特色料理。"},{"x":4,"y":8,"name":"夜景收藏箱","item":"皿倉山觀景卡","tip":"皿倉山夜間山頂可能很冷，請確認纜車營運及最後下山時間。"},{"x":3,"y":10,"name":"回程整理箱","item":"返航檢查卡","tip":"最後一天預留回飯店取行李、轉往國際線航廈及辦理托運的時間。"}];
+let npcChat={index:-1,page:0};
+let activeObject=null;
+function chestOwned(i){try{return localStorage.getItem("kyushu-pixel-treasure-"+i)==="yes"}catch(e){return false}}
+function updateTreasureCollection(){
+ const count=rpgChests.filter((c,i)=>chestOwned(i)).length;
+ document.getElementById("treasure-count").textContent=count+" / "+rpgChests.length;
+ const shelf=document.getElementById("treasure-list");shelf.replaceChildren();
+ rpgChests.forEach((c,i)=>{const chip=document.createElement("span");chip.className="rpg-treasure-chip"+(chestOwned(i)?" owned":"");chip.textContent=(chestOwned(i)?"★ ":"□ ")+c.item;chip.title=chestOwned(i)?c.tip:"尚未開啟寶箱";shelf.appendChild(chip)});
+ document.querySelectorAll(".rpg-tile .rpg-object.chest").forEach(e=>{const i=Number(e.dataset.chest);e.textContent=chestOwned(i)?"📭":"🎁";e.classList.toggle("opened",chestOwned(i))});
+}
+function findNearbyObject(x,y){
+ const dist=o=>Math.abs(o.x-x)+Math.abs(o.y-y);
+ const nc=rpgNpcs.findIndex(n=>dist(n)<=1);
+ if(nc>=0)return {kind:"npc",index:nc};
+ const ch=rpgChests.findIndex(n=>dist(n)<=1);
+ return ch>=0?{kind:"chest",index:ch}:null;
+}
+function showObjectPrompt(obj){
+ const box=document.getElementById("rpg-dialog");box.replaceChildren();
+ const h=document.createElement("strong"),p=document.createElement("p");
+ if(obj.kind==="npc"){h.textContent="💬 "+rpgNpcs[obj.index].name;p.textContent="遇到旅行嚮導！點選「對話／開寶箱」可以聽取當地提示。"}
+ else{h.textContent="🎁 "+rpgChests[obj.index].name;p.textContent=chestOwned(obj.index)?"這個寶箱已打開，可以再次查看旅行知識。":"發現寶箱！點選「對話／開寶箱」領取旅行知識卡。"}
+ box.append(h,p);
+}
+function interactRpg(){
+ if(!activeObject)return;
+ const o=activeObject,box=document.getElementById("rpg-dialog");box.replaceChildren();
+ const h=document.createElement("strong"),p=document.createElement("p");
+ if(o.kind==="npc"){
+  const n=rpgNpcs[o.index];
+  if(npcChat.index!==o.index){npcChat={index:o.index,page:0}}
+  else npcChat.page=(npcChat.page+1)%n.dialog.length;
+  h.textContent="💬 "+n.name+" · "+(npcChat.page+1)+"/"+n.dialog.length;
+  p.textContent=n.dialog[npcChat.page];
+ }else{
+  const c=rpgChests[o.index],first=!chestOwned(o.index);
+  if(first)try{localStorage.setItem("kyushu-pixel-treasure-"+o.index,"yes")}catch(e){}
+  h.textContent=(first?"✨ 發現新知識！":"📖 再次閱讀：")+c.item;
+  p.textContent=c.tip;
+  updateTreasureCollection();
+ }
+ box.append(h,p);
+}
 const mapW=16,mapH=11,mapRoad=new Set();
 function tileKey(x,y){return x+","+y}
 regionNodes.forEach((n,i)=>{
@@ -688,6 +754,7 @@ regionNodes.forEach((n,i)=>{
   while(y!==n.y){y+=Math.sign(n.y-y);mapRoad.add(tileKey(x,y))}
  }
 });
+rpgNpcs.concat(rpgChests).forEach(o=>mapRoad.add(tileKey(o.x,o.y)));
 const mapBlocked=new Set();
 for(let y=0;y<mapH;y++)for(let x=0;x<mapW;x++){
  if(mapRoad.has(tileKey(x,y)))continue;
@@ -711,6 +778,13 @@ for(let y=0;y<mapH;y++)for(let x=0;x<mapW;x++){
   const label=document.createElement("span");label.className="rpg-label";label.textContent=regionNodes[node].name;tile.appendChild(label);
   tile.title="DAY "+(node+1)+"｜"+regionNodes[node].name;
  }
+ if(node<0){
+  const npcIndex=rpgNpcs.findIndex(n=>n.x===x&&n.y===y),chestIndex=rpgChests.findIndex(c=>c.x===x&&c.y===y);
+  if(npcIndex>=0||chestIndex>=0){const el=document.createElement("span");el.className="rpg-object "+(npcIndex>=0?"npc":"chest");el.textContent=npcIndex>=0?rpgNpcs[npcIndex].icon:(chestOwned(chestIndex)?"📭":"🎁");
+   if(chestIndex>=0)el.dataset.chest=chestIndex;
+   tile.appendChild(el);tile.title=npcIndex>=0?rpgNpcs[npcIndex].name:rpgChests[chestIndex].name;
+  }
+ }
  board.appendChild(tile);
 }
 const sprite=document.createElement("div");sprite.className="rpg-hero";sprite.setAttribute("aria-hidden","true");
@@ -730,12 +804,17 @@ function drawExplorer(){
  try{localStorage.setItem("kyushu-pixel-explorer-position",JSON.stringify(explorer))}catch(e){}
  const index=regionNodes.findIndex(n=>Math.abs(n.x-explorer.x)+Math.abs(n.y-explorer.y)<=1);
  nearbyNode=index<0?null:index;
+ const prev=activeObject;
+ activeObject=findNearbyObject(explorer.x,explorer.y);
+ if(!activeObject||!prev||prev.kind!==activeObject.kind||prev.index!==activeObject.index)npcChat={index:-1,page:0};
+ document.getElementById("rpg-interact").disabled=!activeObject;
  document.getElementById("rpg-enter").disabled=nearbyNode===null;
  const box=document.getElementById("rpg-dialog");box.replaceChildren();
  const strong=document.createElement("strong"),p=document.createElement("p");
  if(index<0){strong.textContent="正在探索九州...";p.textContent="沿著土黃色道路前進，接近城鎮圖示即可查看關卡。"}
  else{strong.textContent="▶ DAY "+(index+1)+" · "+regionNodes[index].name;p.textContent=regionNodes[index].description+(isQuestComplete(index)?"　★ 已取得徽章":"")}
  box.append(strong,p);
+ if(activeObject)showObjectPrompt(activeObject);
  document.querySelectorAll(".rpg-tile.town").forEach(t=>t.classList.toggle("active",index>=0&&Number(t.dataset.x)===regionNodes[index].x&&Number(t.dataset.y)===regionNodes[index].y));
 }
 function walk(dx,dy){
@@ -751,12 +830,14 @@ document.querySelectorAll("[data-move]").forEach(btn=>btn.addEventListener("clic
 board.addEventListener("keydown",event=>{
  const direction={ArrowUp:"up",ArrowDown:"down",ArrowLeft:"left",ArrowRight:"right",w:"up",W:"up",a:"left",A:"left",s:"down",S:"down",d:"right",D:"right"}[event.key];
  if(direction){event.preventDefault();walk(...moveMap[direction])}
- if((event.key==="Enter"||event.key===" ")&&nearbyNode!==null){event.preventDefault();openQuest()}
+ if((event.key==="e"||event.key==="E"||event.key===" ")&&activeObject){event.preventDefault();interactRpg()}
+ else if(event.key==="Enter"&&nearbyNode!==null){event.preventDefault();openQuest()}
 });
 board.addEventListener("click",event=>{
  const tile=event.target.closest(".rpg-tile");if(!tile)return;
  const x=Number(tile.dataset.x),y=Number(tile.dataset.y),dx=x-explorer.x,dy=y-explorer.y;
  if(Math.abs(dx)+Math.abs(dy)===1)walk(dx,dy);
+ else if(rpgNpcs.concat(rpgChests).some(n=>n.x===x&&n.y===y)){const p=document.querySelector("#rpg-dialog p");if(p)p.textContent="走近角色或寶箱後，按「對話／開寶箱」互動。"}
  else if(regionNodes.some(n=>n.x===x&&n.y===y)){const p=document.querySelector("#rpg-dialog p");if(p)p.textContent="走近地標就可以進入關卡！使用十字鍵沿路探索。"}
  board.focus({preventScroll:true});
 });
@@ -766,6 +847,7 @@ function openQuest(){
  document.getElementById("itinerary").scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"});
 }
 document.getElementById("rpg-enter").addEventListener("click",openQuest);
+document.getElementById("rpg-interact").addEventListener("click",interactRpg);
 document.getElementById("rpg-reset").addEventListener("click",()=>{explorer={x:1,y:1};drawExplorer();board.focus({preventScroll:true})});
 const originalShowDay=showDay;
 showDay=function(i){
@@ -777,7 +859,7 @@ showDay=function(i){
  b.addEventListener("click",()=>{try{const next=!isQuestComplete(i);localStorage.setItem("kyushu-pixel-quest-day-"+i,next?"yes":"no")}catch(e){}b.setAttribute("aria-pressed",isQuestComplete(i)?"true":"false");b.textContent=isQuestComplete(i)?"★ 已取得徽章":"☆ 領取冒險徽章";questUpdate();drawExplorer()});
  q.append(p,b);panel.appendChild(q);
 };
-questUpdate();drawExplorer();showDay(0);
+questUpdate();updateTreasureCollection();drawExplorer();showDay(0);
 </script>
 </body>
 </html>
