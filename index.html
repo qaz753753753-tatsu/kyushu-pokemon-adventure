@@ -715,9 +715,9 @@ function updateTreasureCollection(){
 function findNearbyObject(x,y){
  const dist=o=>Math.abs(o.x-x)+Math.abs(o.y-y);
  const nc=rpgNpcs.findIndex(n=>dist(n)<=1);
- if(nc>=0)return {kind:"npc",index:nc};
  const ch=rpgChests.findIndex(n=>dist(n)<=1);
- return ch>=0?{kind:"chest",index:ch}:null;
+ if(ch>=0&&(nc<0||dist(rpgChests[ch])<=dist(rpgNpcs[nc])))return {kind:"chest",index:ch};
+ return nc>=0?{kind:"npc",index:nc}:null;
 }
 function showObjectPrompt(obj){
  const box=document.getElementById("rpg-dialog");box.replaceChildren();
