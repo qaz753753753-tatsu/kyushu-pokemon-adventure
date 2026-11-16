@@ -181,6 +181,38 @@ main{max-width:1120px}h1{font-weight:900;font-size:clamp(30px,6vw,58px);line-hei
 @media(max-width:680px){.world-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.world-map{padding:14px}.world-stop{padding:10px 3px}.world-stop strong{font-size:12px}}
 @media(prefers-reduced-motion:reduce){.world-stop{transition:none}}
 </style>
+
+<style id="rpg-explorer-style">
+.rpg-shell{border:5px solid #25374f;background:#f9edcc;box-shadow:7px 7px 0 #25374f;margin:12px 5px 20px}
+.rpg-header{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;background:#273c55;color:#fff1cb;padding:12px 14px;font-size:12px;font-weight:900;letter-spacing:.04em}
+.rpg-board{--cols:16;display:grid;grid-template-columns:repeat(16,minmax(0,1fr));width:100%;aspect-ratio:16 / 11;position:relative;outline-offset:3px;overflow:hidden;background:#8cbc88;image-rendering:pixelated;touch-action:manipulation}
+.rpg-tile{position:relative;min-width:0;min-height:0;box-shadow:inset 0 0 0 1px #0000000b;display:grid;place-items:center;user-select:none}
+.rpg-tile.grass{background:#8ac075}.rpg-tile.grass:nth-child(3n){background:#84b96f}
+.rpg-tile.road{background:#dfc58d;box-shadow:inset 0 0 0 2px #c5a96e}
+.rpg-tile.woods{background:#51926b}.rpg-tile.woods:before{content:"";width:65%;height:67%;background:#306c58;clip-path:polygon(50% 0,100% 70%,77% 70%,91% 100%,9% 100%,23% 70%,0 70%)}
+.rpg-tile.rock{background:#819890}.rpg-tile.rock:before{content:"";width:74%;height:62%;background:#526e76;clip-path:polygon(7% 100%,25% 30%,52% 0,83% 52%,95% 100%)}
+.rpg-tile.water{background:#72b6c6;background-image:repeating-linear-gradient(0deg,transparent 0 10px,#9cd3d7 10px 12px,transparent 12px 19px)}
+.rpg-tile.town{background:#e2c78f;border:2px solid #a4895c}
+.rpg-tile .rpg-marker{font-size:clamp(13px,2.5vw,28px);line-height:1;filter:drop-shadow(1px 2px #273c55);pointer-events:none;z-index:1}
+.rpg-tile .rpg-label{position:absolute;bottom:0;left:50%;transform:translate(-50%,36%);font-size:clamp(7px,1.2vw,12px);font-weight:900;color:#fff;background:#25374f;padding:1px 3px;white-space:nowrap;z-index:2;max-width:110px}
+.rpg-tile.town.active{background:#f5d777}
+.rpg-hero{position:absolute;z-index:4;pointer-events:none;width:6.25%;height:9.0909%;transition:left .11s linear,top .11s linear;filter:drop-shadow(2px 3px 0 #1a3240)}
+.rpg-hero svg{width:100%;height:100%;display:block;image-rendering:pixelated}
+.rpg-dialog{border-bottom:3px solid #25374f;padding:13px 16px;min-height:94px;background:#fffbed}
+.rpg-dialog strong{font-size:15px}.rpg-dialog p{margin:5px 0 0;font-size:13px;color:#374d5c}
+.rpg-actions{display:flex;flex-wrap:wrap;gap:10px;padding:12px 16px;background:#e7f0cf}
+.rpg-actions button,.rpg-dpad button{background:#f5d270;border:3px solid #25374f;border-radius:2px;box-shadow:3px 3px 0 #25374f;font-weight:900;color:#25374f;cursor:pointer}
+.rpg-actions button{padding:9px 13px;font-size:13px}.rpg-actions button:disabled{opacity:.48;cursor:not-allowed}
+.rpg-controls{border-top:4px solid #25374f;display:flex;gap:22px;justify-content:center;align-items:center;padding:18px;background:#d4e4c0}
+.rpg-dpad{display:grid;grid-template-columns:repeat(3,52px);grid-template-rows:repeat(3,48px);gap:3px}
+.rpg-dpad button{font-size:20px;touch-action:manipulation;min-width:0;min-height:0}
+.rpg-dpad .rpg-up{grid-column:2;grid-row:1}.rpg-dpad .rpg-left{grid-column:1;grid-row:2}.rpg-dpad .rpg-down{grid-column:2;grid-row:3}.rpg-dpad .rpg-right{grid-column:3;grid-row:2}
+.rpg-dpad button:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #25374f}
+.rpg-help{max-width:280px;font-size:13px}.rpg-help p{margin:5px 0 0;line-height:1.8}
+.rpg-board:focus-visible{outline:4px solid #edb34f}
+@media(max-width:570px){.rpg-header{font-size:10px;padding:9px}.rpg-shell{margin:8px 3px 18px}.rpg-controls{gap:14px;padding:12px}.rpg-dpad{grid-template-columns:repeat(3,43px);grid-template-rows:repeat(3,43px)}.rpg-help{font-size:11px}.rpg-dialog{min-height:108px}.rpg-tile .rpg-label{display:none}.rpg-tile .rpg-marker{font-size:clamp(11px,3.5vw,18px)}}
+@media(prefers-reduced-motion:reduce){.rpg-hero{transition:none}}
+</style>
 </head>
 <body>
 <header class="topbar">
@@ -235,17 +267,29 @@ main{max-width:1120px}h1{font-weight:900;font-size:clamp(30px,6vw,58px);line-hei
 </section>
 
 <section id="world" class="world-section">
-<div class="section-head"><div><div class="eyebrow">WORLD MAP / QUEST SELECT</div><h2>九州冒險地圖</h2></div><p id="quest-count">徽章 0 / 8</p></div>
-<div class="world-map"><div class="world-grid" id="world-grid">
-<button class="world-stop" data-world="0"><span>🏙️</span><strong>01 福岡</strong><small>冒險起點</small></button>
-<button class="world-stop" data-world="1"><span>♨️</span><strong>02 黑川</strong><small>溫泉森林</small></button>
-<button class="world-stop" data-world="2"><span>🌋</span><strong>03 阿蘇</strong><small>火山高原</small></button>
-<button class="world-stop" data-world="3"><span>⛴️</span><strong>04 熊本</strong><small>渡海任務</small></button>
-<button class="world-stop" data-world="4"><span>🌉</span><strong>05 長崎</strong><small>港灣之城</small></button>
-<button class="world-stop" data-world="5"><span>🍵</span><strong>06 嬉野</strong><small>療癒之泉</small></button>
-<button class="world-stop" data-world="6"><span>🌃</span><strong>07 北九州</strong><small>夜景任務</small></button>
-<button class="world-stop" data-world="7"><span>✈️</span><strong>08 福岡</strong><small>冒險完成</small></button>
-</div></div><p class="world-hint">▲ 點選地圖關卡可跳轉到當天行程；完成一天後可領取冒險徽章。</p><div class="badge-shelf" id="badge-shelf"></div>
+ <div class="section-head"><div><div class="eyebrow">EXPLORE / KYUSHU REGION</div><h2>九州冒險世界</h2></div><p id="quest-count">徽章 0 / 8</p></div>
+ <div class="rpg-shell">
+  <div class="rpg-header"><span>◈ KYUSHU WORLD MAP</span><span>▲ 十字鍵探索</span></div>
+  <div class="rpg-board" id="rpg-board" role="group" aria-label="可探索的九州像素地圖。點選地圖後可用方向鍵或 WASD 移動。" tabindex="0"></div>
+  <div class="rpg-interface">
+   <div class="rpg-dialog" aria-live="polite" id="rpg-dialog"><strong>冒險開始！</strong><p>用方向鍵移動，走到地圖上的關卡地標就能探索行程。</p></div>
+   <div class="rpg-actions">
+    <button type="button" id="rpg-enter" disabled>進入當日行程 ▶</button>
+    <button type="button" id="rpg-reset">↻ 回到起點</button>
+   </div>
+  </div>
+  <div class="rpg-controls" aria-label="移動控制">
+   <div class="rpg-dpad">
+    <button type="button" class="rpg-up" data-move="up" aria-label="向上">▲</button>
+    <button type="button" class="rpg-left" data-move="left" aria-label="向左">◀</button>
+    <button type="button" class="rpg-down" data-move="down" aria-label="向下">▼</button>
+    <button type="button" class="rpg-right" data-move="right" aria-label="向右">▶</button>
+   </div>
+   <div class="rpg-help"><strong>🎮 操作方法</strong><p>手機：點十字鍵或地圖上的道路格。<br>電腦：先點地圖，再按方向鍵／WASD。<br>接近地標後可查看關卡及開啟行程。</p></div>
+  </div>
+ </div>
+ <p class="world-hint">地圖是遊戲化示意，不是實際公路比例；自駕請使用下方 Google Maps 路線。旅程徽章需自行確認完成後領取。</p>
+ <div class="badge-shelf" id="badge-shelf"></div>
 </section>
 <section id="flights">
  <div class="section-head"><div><div class="eyebrow">FLIGHT INFORMATION</div><h2>✈ 啟程補給站</h2></div><p>星宇航空・台灣 ⇄ 福岡</p></div>
@@ -625,26 +669,115 @@ setupChecks();
 
 <script id="pixel-quest-interactions">
 const questNames=["福岡起點","黑川溫泉","阿蘇高原","渡海雲仙","長崎港灣","嬉野療癒","北九州夜景","福岡返航"];
+const regionNodes=[
+ {x:1,y:1,icon:"🏙️",name:"福岡",description:"DAY 1｜抵達博多，展開九州冒險。"},
+ {x:5,y:2,icon:"♨️",name:"黑川",description:"DAY 2｜由布院散策後，前往黑川溫泉。"},
+ {x:9,y:2,icon:"🌋",name:"阿蘇",description:"DAY 3｜大觀峰、草千里與跨年住宿。"},
+ {x:13,y:3,icon:"⛴️",name:"熊本",description:"DAY 4｜阿蘇神社、熊本城與渡輪前往雲仙。"},
+ {x:13,y:7,icon:"🌉",name:"長崎",description:"DAY 5｜雲仙地獄、眼鏡橋與稻佐山。"},
+ {x:9,y:8,icon:"🍵",name:"嬉野",description:"DAY 6｜和平公園、可選武雄與嬉野溫泉。"},
+ {x:5,y:7,icon:"🌃",name:"北九州",description:"DAY 7｜太宰府、福岡還車與皿倉山夜景。"},
+ {x:2,y:9,icon:"✈️",name:"返航",description:"DAY 8｜博多採買與福岡機場返台。"}
+];
+const mapW=16,mapH=11,mapRoad=new Set();
+function tileKey(x,y){return x+","+y}
+regionNodes.forEach((n,i)=>{
+ mapRoad.add(tileKey(n.x,n.y));
+ if(i){const p=regionNodes[i-1];let x=p.x,y=p.y;
+  while(x!==n.x){x+=Math.sign(n.x-x);mapRoad.add(tileKey(x,y))}
+  while(y!==n.y){y+=Math.sign(n.y-y);mapRoad.add(tileKey(x,y))}
+ }
+});
+const mapBlocked=new Set();
+for(let y=0;y<mapH;y++)for(let x=0;x<mapW;x++){
+ if(mapRoad.has(tileKey(x,y)))continue;
+ const h=(x*13+y*29+x*y*7)%17;
+ if((x===15&&y>=4&&y<=9)||(x===14&&y>=5&&y<=8))mapBlocked.add(tileKey(x,y));
+ else if(h===2||h===6||h===8||h===11||h===15)mapBlocked.add(tileKey(x,y));
+}
+function mapTerrain(x,y){
+ if(mapRoad.has(tileKey(x,y)))return "road";
+ if((x===15&&y>=4&&y<=9)||(x===14&&y>=5&&y<=8))return "water";
+ if(mapBlocked.has(tileKey(x,y)))return (x+y)%4===0?"rock":"woods";
+ return "grass";
+}
+const board=document.getElementById("rpg-board");
+for(let y=0;y<mapH;y++)for(let x=0;x<mapW;x++){
+ const tile=document.createElement("div"),node=regionNodes.findIndex(n=>n.x===x&&n.y===y);
+ tile.className="rpg-tile "+(node>=0?"town":mapTerrain(x,y));
+ tile.dataset.x=x;tile.dataset.y=y;
+ if(node>=0){
+  const marker=document.createElement("span");marker.className="rpg-marker";marker.textContent=regionNodes[node].icon;tile.appendChild(marker);
+  const label=document.createElement("span");label.className="rpg-label";label.textContent=regionNodes[node].name;tile.appendChild(label);
+  tile.title="DAY "+(node+1)+"｜"+regionNodes[node].name;
+ }
+ board.appendChild(tile);
+}
+const sprite=document.createElement("div");sprite.className="rpg-hero";sprite.setAttribute("aria-hidden","true");
+sprite.innerHTML='<svg viewBox="0 0 32 32" shape-rendering="crispEdges"><rect x="9" y="2" width="14" height="5" fill="#cb5b65"/><rect x="5" y="7" width="22" height="5" fill="#cb5b65"/><rect x="10" y="12" width="13" height="8" fill="#f0cda7"/><rect x="10" y="12" width="6" height="3" fill="#293c55"/><rect x="8" y="20" width="17" height="7" fill="#5387b1"/><rect x="5" y="21" width="4" height="6" fill="#f0cda7"/><rect x="25" y="21" width="4" height="6" fill="#f0cda7"/><rect x="10" y="27" width="6" height="4" fill="#26354b"/><rect x="19" y="27" width="6" height="4" fill="#26354b"/></svg>';
+board.appendChild(sprite);
+let explorer={x:1,y:1};
+try{const saved=JSON.parse(localStorage.getItem("kyushu-pixel-explorer-position")||"null");if(saved&&Number.isInteger(saved.x)&&Number.isInteger(saved.y)&&saved.x>=0&&saved.x<mapW&&saved.y>=0&&saved.y<mapH&&!mapBlocked.has(tileKey(saved.x,saved.y)))explorer=saved}catch(e){}
+let nearbyNode=null;
 function isQuestComplete(i){try{return localStorage.getItem("kyushu-pixel-quest-day-"+i)==="yes"}catch(e){return false}}
 function questUpdate(){
- let total=0;
- document.querySelectorAll(".world-stop").forEach((b,i)=>{const yes=isQuestComplete(i);total+=yes?1:0;b.classList.toggle("cleared",yes);b.setAttribute("aria-label","DAY "+(i+1)+" "+questNames[i]+(yes?" 已取得徽章":" 未取得徽章"))});
+ const total=questNames.filter((_,i)=>isQuestComplete(i)).length;
  document.getElementById("quest-count").textContent="徽章 "+total+" / 8";
  document.getElementById("badge-shelf").innerHTML=questNames.map((name,i)=>'<span class="quest-badge '+(isQuestComplete(i)?"earned":"")+'">'+(isQuestComplete(i)?"★ ":"◇ ")+(i+1)+" "+name+"</span>").join("");
 }
+function drawExplorer(){
+ sprite.style.left=(explorer.x/mapW*100)+"%";sprite.style.top=(explorer.y/mapH*100)+"%";
+ try{localStorage.setItem("kyushu-pixel-explorer-position",JSON.stringify(explorer))}catch(e){}
+ const index=regionNodes.findIndex(n=>Math.abs(n.x-explorer.x)+Math.abs(n.y-explorer.y)<=1);
+ nearbyNode=index<0?null:index;
+ document.getElementById("rpg-enter").disabled=nearbyNode===null;
+ const box=document.getElementById("rpg-dialog");box.replaceChildren();
+ const strong=document.createElement("strong"),p=document.createElement("p");
+ if(index<0){strong.textContent="正在探索九州...";p.textContent="沿著土黃色道路前進，接近城鎮圖示即可查看關卡。"}
+ else{strong.textContent="▶ DAY "+(index+1)+" · "+regionNodes[index].name;p.textContent=regionNodes[index].description+(isQuestComplete(index)?"　★ 已取得徽章":"")}
+ box.append(strong,p);
+ document.querySelectorAll(".rpg-tile.town").forEach(t=>t.classList.toggle("active",index>=0&&Number(t.dataset.x)===regionNodes[index].x&&Number(t.dataset.y)===regionNodes[index].y));
+}
+function walk(dx,dy){
+ const x=explorer.x+dx,y=explorer.y+dy;
+ if(x<0||x>=mapW||y<0||y>=mapH||mapBlocked.has(tileKey(x,y))){
+  const p=document.querySelector("#rpg-dialog p");if(p)p.textContent="這裡無法通行！試試沿著道路或草地繞過障礙。";
+  return;
+ }
+ explorer={x,y};drawExplorer();
+}
+const moveMap={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]};
+document.querySelectorAll("[data-move]").forEach(btn=>btn.addEventListener("click",()=>{walk(...moveMap[btn.dataset.move]);board.focus({preventScroll:true})}));
+board.addEventListener("keydown",event=>{
+ const direction={ArrowUp:"up",ArrowDown:"down",ArrowLeft:"left",ArrowRight:"right",w:"up",W:"up",a:"left",A:"left",s:"down",S:"down",d:"right",D:"right"}[event.key];
+ if(direction){event.preventDefault();walk(...moveMap[direction])}
+ if((event.key==="Enter"||event.key===" ")&&nearbyNode!==null){event.preventDefault();openQuest()}
+});
+board.addEventListener("click",event=>{
+ const tile=event.target.closest(".rpg-tile");if(!tile)return;
+ const x=Number(tile.dataset.x),y=Number(tile.dataset.y),dx=x-explorer.x,dy=y-explorer.y;
+ if(Math.abs(dx)+Math.abs(dy)===1)walk(dx,dy);
+ else if(regionNodes.some(n=>n.x===x&&n.y===y)){const p=document.querySelector("#rpg-dialog p");if(p)p.textContent="走近地標就可以進入關卡！使用十字鍵沿路探索。"}
+ board.focus({preventScroll:true});
+});
+function openQuest(){
+ if(nearbyNode===null)return;
+ showDay(nearbyNode);
+ document.getElementById("itinerary").scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"});
+}
+document.getElementById("rpg-enter").addEventListener("click",openQuest);
+document.getElementById("rpg-reset").addEventListener("click",()=>{explorer={x:1,y:1};drawExplorer();board.focus({preventScroll:true})});
 const originalShowDay=showDay;
 showDay=function(i){
  originalShowDay(i);
- document.querySelectorAll(".world-stop").forEach((b,n)=>b.classList.toggle("active",n===i));
  const panel=document.getElementById("day-panel");
  const q=document.createElement("div");q.className="quest-complete";
  const p=document.createElement("p");p.textContent="★ 完成今日冒險，即可收集 DAY "+(i+1)+" 徽章";
  const b=document.createElement("button");b.type="button";b.setAttribute("aria-pressed",isQuestComplete(i)?"true":"false");b.textContent=isQuestComplete(i)?"★ 已取得徽章":"☆ 領取冒險徽章";
- b.addEventListener("click",()=>{try{const next=!isQuestComplete(i);localStorage.setItem("kyushu-pixel-quest-day-"+i,next?"yes":"no")}catch(e){}b.setAttribute("aria-pressed",isQuestComplete(i)?"true":"false");b.textContent=isQuestComplete(i)?"★ 已取得徽章":"☆ 領取冒險徽章";questUpdate()});
+ b.addEventListener("click",()=>{try{const next=!isQuestComplete(i);localStorage.setItem("kyushu-pixel-quest-day-"+i,next?"yes":"no")}catch(e){}b.setAttribute("aria-pressed",isQuestComplete(i)?"true":"false");b.textContent=isQuestComplete(i)?"★ 已取得徽章":"☆ 領取冒險徽章";questUpdate();drawExplorer()});
  q.append(p,b);panel.appendChild(q);
 };
-document.querySelectorAll(".world-stop").forEach((b,i)=>b.addEventListener("click",()=>{showDay(i);document.getElementById("itinerary").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"})}));
-questUpdate();showDay(0);
+questUpdate();drawExplorer();showDay(0);
 </script>
 </body>
 </html>
