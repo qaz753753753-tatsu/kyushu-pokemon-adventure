@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#243751">
+<title>九州像素冒險｜8日探索手帳</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Huninn&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FFFCF6;--ink:#3E3A39;--pink:#F2A497;--yellow:#F6D27A;
+  --blue:#A8D3E6;--green:#B9DAA5;--muted:#817b73;--line:3px solid var(--ink);
+  --round:26px;--shadow:5px 5px 0 var(--ink);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:82px}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Huninn","Noto Sans TC",sans-serif;line-height:1.65}
+button,a{font:inherit;color:inherit}
+button{cursor:pointer}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,252,246,.96);border-bottom:var(--line);padding:10px 16px}
+.nav{max-width:1080px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-size:19px;font-weight:bold;white-space:nowrap}
+.brand span{display:inline-grid;place-items:center;width:32px;height:32px;border:2px solid var(--ink);border-radius:50%;background:var(--yellow);margin-right:6px}
+.navlinks{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.navlinks a{text-decoration:none;white-space:nowrap;padding:7px 11px;border:2px solid transparent;border-radius:999px;font-size:14px}
+.navlinks a:hover{border-color:var(--ink);background:#fff}
+main{max-width:1080px;margin:auto;padding:22px 16px 70px}
+section{margin:30px 0 48px}
+.eyebrow{font-size:13px;letter-spacing:.12em;color:var(--muted);font-weight:bold}
+h1,h2,h3,p{margin-top:0}
+h1{font-size:clamp(34px,8vw,62px);line-height:1.15;margin:12px 0}
+h2{font-size:clamp(25px,5vw,34px);margin-bottom:8px}
+h3{font-size:20px;margin-bottom:8px}
+.lead{font-size:17px;color:#625c55}
+.hero{border:var(--line);border-radius:34px;background:#fff;padding:24px 22px 18px;box-shadow:var(--shadow);overflow:hidden;position:relative}
+.hero-grid{display:grid;grid-template-columns:1fr;align-items:center;gap:12px}
+.hero-art{width:100%;max-height:260px;display:block}
+.hero-copy{position:relative;z-index:1}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border:2px solid var(--ink);border-radius:999px;background:var(--green);font-size:13px;font-weight:bold}
+.countdown{display:flex;gap:9px;margin-top:18px;flex-wrap:wrap}
+.countbox{min-width:72px;padding:9px 12px;text-align:center;border:2px solid var(--ink);border-radius:16px;background:var(--yellow)}
+.countbox strong{display:block;font-size:26px;line-height:1.2}
+.countbox small{font-size:12px}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:18px}
+.section-head p{margin:0;color:var(--muted);font-size:14px}
+.grid2{display:grid;grid-template-columns:1fr;gap:14px}
+.card{border:var(--line);border-radius:var(--round);padding:18px;background:#fff;box-shadow:4px 4px 0 var(--ink)}
+.flight{position:relative;overflow:hidden}
+.flight.out{background:#fff0ec}.flight.back{background:#eef8fc}
+.flight-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.airline{font-size:14px;font-weight:bold}
+.flight-route{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:18px 0 10px}
+.airport{font-size:13px;color:var(--muted)}
+.airport strong{display:block;font-size:29px;color:var(--ink)}
+.flight-line{flex:1;text-align:center;border-top:2px dashed var(--ink);position:relative}
+.flight-line:after{content:"✈";position:absolute;top:-17px;left:calc(50% - 10px);background:inherit;padding:0 5px}
+.flight-time{font-size:20px;font-weight:bold}
+.note{font-size:13px;color:#625c55;margin-bottom:0}
+.day-tabs{display:flex;gap:8px;overflow-x:auto;padding:5px 3px 14px;scrollbar-width:thin}
+.day-tab{flex:0 0 auto;border:2px solid var(--ink);border-radius:16px;background:#fff;padding:9px 13px;min-width:76px;transition:transform .22s,background .22s}
+.day-tab span{display:block;font-size:12px;color:var(--muted)}
+.day-tab strong{font-size:15px}
+.day-tab[aria-selected="true"]{background:var(--yellow);box-shadow:3px 3px 0 var(--ink);transform:translateY(-3px) rotate(-1deg)}
+.day-panel{border:var(--line);border-radius:var(--round);background:#fff;padding:18px;animation:pop .28s ease-out}
+@keyframes pop{0%{opacity:.4;transform:translateY(8px) scale(.985)}70%{transform:translateY(-2px) scale(1.01)}100%{opacity:1;transform:translateY(0) scale(1)}}
+.day-title{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:16px}
+.day-title h3{font-size:22px;margin:0}
+.day-title p{font-size:13px;color:var(--muted);margin:3px 0 0}
+.day-illustration{width:82px;height:68px;flex:0 0 auto}
+.timeline{position:relative;margin:8px 0 0 6px;padding-left:23px;border-left:3px solid #ded8cd}
+.event{position:relative;padding:0 0 20px 12px}
+.event:last-child{padding-bottom:0}
+.event:before{content:"";position:absolute;left:-32px;top:5px;width:15px;height:15px;border:3px solid var(--ink);border-radius:50%;background:var(--yellow)}
+.event time{font-size:13px;color:var(--muted);font-weight:bold}
+.event h4{margin:3px 0 5px;font-size:17px}
+.event p{font-size:14px;margin:0;color:#625c55}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+.tag{display:inline-block;border:1.5px solid var(--ink);border-radius:999px;padding:2px 9px;font-size:12px;background:var(--blue)}
+.tag.walk{background:var(--green)}.tag.car{background:var(--yellow)}.tag.train{background:var(--blue)}.tag.ferry{background:var(--pink)}.tag.must{background:var(--pink);font-weight:bold}
+.info-grid{display:grid;grid-template-columns:1fr;gap:14px}
+.stay{display:flex;gap:13px;align-items:flex-start}
+.stay-icon{display:grid;place-items:center;width:46px;height:46px;border:2px solid var(--ink);border-radius:15px;background:var(--pink);font-size:23px;flex:0 0 auto}
+.stay p{margin:3px 0 0;font-size:14px;color:#625c55}
+.checklist{display:grid;gap:9px}
+.checkrow{display:flex;align-items:flex-start;gap:10px;padding:9px 10px;border:2px solid #e6dfd3;border-radius:14px;background:#fff;cursor:pointer}
+.checkrow input{appearance:none;width:21px;height:21px;border:2px solid var(--ink);border-radius:6px;margin:2px 0 0;flex:0 0 auto;background:#fff}
+.checkrow input:checked{background:var(--green);position:relative}
+.checkrow input:checked:after{content:"✓";position:absolute;left:2px;top:-4px;font-weight:bold;font-size:18px}
+.checkrow:has(input:checked) .checktext{text-decoration:line-through;color:#938c82}
+.progress{height:12px;border:2px solid var(--ink);border-radius:999px;background:#fff;overflow:hidden;margin:10px 0 15px}
+.progress span{display:block;height:100%;width:0;background:var(--green);transition:width .2s}
+.progress-label{font-size:13px;color:var(--muted)}
+.two-col{display:grid;grid-template-columns:1fr;gap:14px}
+.callout{background:#fff7df;border:2px dashed var(--ink);border-radius:20px;padding:14px 16px;font-size:14px}
+.footer{text-align:center;padding:25px 10px;color:var(--muted);font-size:13px}
+.footer .sun{font-size:28px}
+.svg-float{transform-origin:center;animation:float 4s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.svg-sway{transform-origin:50% 80%;animation:sway 5s ease-in-out infinite}
+@keyframes sway{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+.smallprint{font-size:12px;color:var(--muted)}
+@media(min-width:700px){
+ main{padding:34px 24px 80px}.hero{padding:34px}.hero-grid{grid-template-columns:1.05fr .95fr;gap:20px}
+ .grid2{grid-template-columns:1fr 1fr}.info-grid{grid-template-columns:1fr 1fr}.two-col{grid-template-columns:1fr 1fr}
+ .day-panel{padding:24px}.day-illustration{width:110px;height:90px}
+}
+@media(max-width:520px){.brand{font-size:16px}.nav{align-items:flex-start;flex-direction:column;gap:3px}.navlinks{width:100%}.topbar{padding:8px 12px}main{padding-top:15px}.hero{padding:20px 17px}.section-head{align-items:flex-start;flex-direction:column}.flight-route{gap:6px}.airport strong{font-size:25px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+/* 景點小百科 */
+.spot-notes{display:grid;gap:8px;margin:11px 0 12px}
+.spot-note{background:#fffdf9;border:2px solid #e5dfd4;border-left:5px solid var(--green);border-radius:14px;padding:9px 12px}
+.spot-note strong{display:block;font-size:14px;line-height:1.5;margin-bottom:3px}
+.spot-note p{margin:0!important;font-size:13px;line-height:1.7;color:#665f57}
+@media(max-width:600px){.spot-note{padding:9px 10px}.spot-note p{font-size:13px}}
+
+/* 地圖導航按鈕 */
+.map-link{display:inline-flex;align-items:center;gap:5px;margin-top:9px;padding:6px 12px;background:var(--blue);border:2px solid var(--ink);border-radius:999px;color:var(--ink);font-size:13px;font-weight:700;text-decoration:none;box-shadow:2px 2px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+.map-link:hover,.map-link:focus-visible{transform:translateY(-2px);box-shadow:2px 4px 0 var(--ink)}
+.map-link:active{transform:translateY(1px);box-shadow:0 0 0 var(--ink)}
+.event-map{margin:8px 0 12px}
+@media(prefers-reduced-motion:reduce){.map-link{transition:none}}
+
+/* 每日完整路線 */
+.day-route-card{border:3px solid var(--ink);border-radius:20px;background:#fff8ea;padding:15px 16px;margin:14px 0 22px;box-shadow:3px 3px 0 var(--ink)}
+.day-route-card h4{margin:0 0 8px;font-size:17px}
+.day-route-item{padding:10px 0;border-top:1px dashed #c9bfb0}
+.day-route-item:first-of-type{border-top:0}
+.day-route-item strong{display:block;font-size:14px;margin-bottom:4px}
+.day-route-order{margin:5px 0 8px;font-size:13px;line-height:1.75;color:#5d554a}
+.day-route-hint{margin:7px 0 0;font-size:12px;color:#766a59;line-height:1.65}
+.day-route-btn{display:inline-flex;align-items:center;gap:7px;padding:9px 13px;border:2px solid var(--ink);background:var(--green);border-radius:999px;box-shadow:2px 2px 0 var(--ink);font-size:14px;font-weight:700;text-decoration:none}
+.day-route-btn:hover,.day-route-btn:focus-visible{transform:translateY(-2px)}
+@media(max-width:600px){.day-route-card{padding:12px}.day-route-btn{width:100%;justify-content:center}}
+</style>
+
+<style id="pixel-quest-theme">
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+:root{--paper:#e4edc7;--ink:#25374f;--pink:#ee9889;--yellow:#f5ce70;--blue:#96cada;--green:#b4d587;--muted:#5b6672;--line:4px solid #25374f;--round:3px;--shadow:6px 6px 0 #25374f}
+*{box-sizing:border-box}
+html{scroll-padding-top:120px}
+body{font-family:"Noto Sans TC",sans-serif;color:var(--ink);background:#cfdfa7;background-image:linear-gradient(45deg,#c4da9b 25%,transparent 25%,transparent 75%,#c4da9b 75%),linear-gradient(45deg,#c4da9b 25%,transparent 25%,transparent 75%,#c4da9b 75%);background-size:32px 32px;background-position:0 0,16px 16px}
+.topbar{background:#273c55;color:#fff0ca;border-bottom:5px solid #172539;box-shadow:0 5px #92ad78}.nav{max-width:1120px}
+.brand{font-size:17px;letter-spacing:.035em;font-weight:900}.brand span{border-radius:0;background:#f6cb61;color:#25374f;border:3px solid #101d31;box-shadow:3px 3px 0 #101d31}
+.navlinks a{border-radius:0;font-weight:700}.navlinks a:hover{background:#f5ce70;color:#25374f;border-color:#1b2e45}
+main{max-width:1120px}h1{font-weight:900;font-size:clamp(30px,6vw,58px);line-height:1.4}h2{font-size:clamp(23px,4vw,30px);font-weight:900}h2:before{content:"▶ ";color:#bb5755}
+.eyebrow{font-family:"Press Start 2P",monospace;font-size:9px;color:#6f5560;letter-spacing:0;line-height:1.9}
+.hero,.card,.day-panel,.day-route-card,.callout{border-radius:4px;border:4px solid #25374f;background:#fff7e4;box-shadow:6px 6px 0 #25374f}
+.hero{background:#fff7e4;position:relative}.hero:before{content:"▶ NEW GAME  ·  KYUSHU REGION";display:block;font:10px "Press Start 2P",monospace;color:#526a54;margin-bottom:18px;line-height:1.7}
+.hero-art{image-rendering:pixelated;max-height:300px;border:4px solid #25374f;background:#95cbdf;box-shadow:5px 5px 0 #91a77d}
+.lead{color:#374f5b;font-weight:500}.pill,.countbox,.tag,.checkrow,.stay-icon,.day-tab,.spot-note,.map-link,.day-route-btn{border-radius:3px}
+.countbox{background:#f5ce70;border:3px solid #25374f;box-shadow:3px 3px 0 #25374f}
+.countbox strong{font-family:"Press Start 2P",monospace;font-size:17px;line-height:1.8}
+.flight.out{background:#fff0d4}.flight.back{background:#e4f0df}
+.day-tabs{padding-bottom:16px}.day-tab{background:#fff8e8;border:3px solid #25374f;border-radius:2px;box-shadow:3px 3px 0 #25374f}
+.day-tab[aria-selected=true]{background:#f5ce70;transform:translateY(-3px);box-shadow:3px 6px 0 #25374f}
+.day-tab span{font-weight:800}
+.day-panel{background:#fff8e9}.day-title h3{font-weight:900}.day-illustration svg{image-rendering:pixelated}
+.timeline{border-left:4px dashed #91aa86}.event:before{border-radius:0;background:#eabc68}
+.event h4:before{content:"› ";font-size:21px;color:#bc5b5a}.event h4{font-weight:800}
+.spot-note{background:#fffdf7;border:2px solid #a9baa0;border-left:6px solid #649263}
+.map-link,.day-route-btn{box-shadow:3px 3px 0 #25374f;border:2px solid #25374f;background:#9aceba}
+.day-route-card{background:#e4efda}.day-route-btn{border-radius:3px}
+.checkrow{border:2px solid #a2b39d;background:#fffef3}
+.checkrow input{border-radius:0}.checkrow input:checked{background:#c4df92}
+.stay-icon{background:#f5ce70}.callout{background:#fff0be;border-style:dashed}
+.footer{font-family:"Press Start 2P","Noto Sans TC",sans-serif;line-height:2.2}
+.world-map{background:#82bc8f;border:5px solid #273e57;box-shadow:6px 6px 0 #273e57;padding:20px;background-image:repeating-linear-gradient(0deg,transparent 0px,transparent 28px,rgba(28,105,80,.12) 28px,rgba(28,105,80,.12) 32px),repeating-linear-gradient(90deg,transparent 0px,transparent 28px,rgba(28,105,80,.12) 28px,rgba(28,105,80,.12) 32px)}
+.world-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;position:relative}
+.world-stop{min-width:0;background:#fff4d1;border:4px solid #263951;box-shadow:4px 4px 0 #344a59;padding:14px 6px 10px;text-align:center;display:flex;align-items:center;flex-direction:column;gap:5px;color:#25374f;position:relative;transition:transform .2s}
+.world-stop:before{content:"";position:absolute;left:-12px;right:-12px;top:50%;border-top:5px dotted rgba(42,89,66,.45);z-index:-1}
+.world-stop span{font-size:29px;line-height:1.3}.world-stop strong{font-size:13px;font-weight:900}.world-stop small{font-size:11px;color:#586b66}
+.world-stop.active,.world-stop:focus-visible{background:#f3ce65;outline:3px solid #fff1c8;transform:translateY(-4px)}
+.world-stop.cleared:after{content:"★";position:absolute;top:-13px;right:-10px;background:#c65b66;color:#fff;padding:0 5px;border:3px solid #25374f;font-size:14px}
+.world-hint{font-size:13px;color:#3a554a;margin:13px 0}.badge-shelf{display:flex;gap:8px;flex-wrap:wrap}.quest-badge{background:#f5f0dc;border:3px solid #25374f;box-shadow:2px 2px 0 #25374f;padding:8px 10px;font-size:12px;font-weight:800}.quest-badge.earned{background:#f4ce6b}
+.quest-complete{padding:12px;margin:12px 0;border:3px solid #25374f;background:#ecf2dd;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.quest-complete p{margin:0;font-size:13px}.quest-complete button{border:3px solid #25374f;background:#f5ce70;box-shadow:3px 3px 0 #25374f;padding:9px 14px;font-weight:900}
+.quest-complete button[aria-pressed=true]{background:#aed38b}
+@media(max-width:680px){.world-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.world-map{padding:14px}.world-stop{padding:10px 3px}.world-stop strong{font-size:12px}}
+@media(prefers-reduced-motion:reduce){.world-stop{transition:none}}
+</style>
+</head>
+<body>
+<header class="topbar">
+ <nav class="nav" aria-label="主要選單">
+  <div class="brand"><span>✿</span>九州像素冒險</div>
+  <div class="navlinks">
+   <a href="#world">冒險地圖</a><a href="#flights">航班</a><a href="#itinerary">每日行程</a><a href="#stays">住宿</a><a href="#todos">待辦</a><a href="#packing">行李</a>
+  </div>
+ </nav>
+</header>
+<main>
+<section class="hero" id="home">
+ <div class="hero-grid">
+  <div class="hero-copy">
+   <div class="eyebrow">KYUSHU PIXEL QUEST · WINTER 2026</div>
+   <h1>九州冒險日誌<br><span style="color:#c15f55">8 DAYS QUEST</span></h1>
+   <p class="lead">從福岡出發，穿越溫泉、火山、港灣與山城。探索九州，收集 8 枚旅程徽章！</p>
+   <span class="pill">🎮 2026.12.29 — 2027.01.05</span>
+   <div class="countdown" aria-live="polite">
+    <div class="countbox"><strong id="days">—</strong><small>天</small></div>
+    <div class="countbox"><strong id="hours">—</strong><small>小時</small></div>
+    <div class="countbox"><strong id="minutes">—</strong><small>分鐘</small></div>
+   </div>
+   <p class="smallprint" id="count-label">距離出發還有……</p>
+  </div>
+  <svg class="hero-art" viewBox="0 0 400 270" role="img" aria-label="原創復古像素畫：山丘、森林、道路、冒險旅人與屋子">
+<rect width="400" height="270" fill="#95cbdf"/><rect y="161" width="400" height="109" fill="#a8ce7b"/>
+<g shape-rendering="crispEdges">
+<path d="M13 184V156H39V139H54V122H70V106H87V89H105V106H124V122H145V139H167V156H188V184Z" fill="#557b92" stroke="#2a465a" stroke-width="6"/>
+<path d="M69 122V108H86V90H106V108H119V122H103V136H86V122Z" fill="#f4f3e9"/>
+<path d="M165 186V166H188V151H201V136H214V120H231V136H248V151H262V166H280V186Z" fill="#648899" stroke="#2a465a" stroke-width="6"/>
+<path d="M201 151H214V136H231V151H242V162H201Z" fill="#f3f2eb"/>
+<rect x="0" y="187" width="400" height="12" fill="#4d9769"/>
+<path d="M183 270V247H204V227H225V209H245V193H295V209H317V227H338V247H355V270" fill="#e8cfa0" stroke="#ab9265" stroke-width="6"/>
+<path d="M19 230V214H9V196H19V180H45V196H56V214H45V230Z" fill="#458864" stroke="#234f4e" stroke-width="5"/>
+<path d="M63 239V222H53V205H63V190H90V205H101V222H90V239Z" fill="#458864" stroke="#234f4e" stroke-width="5"/>
+<path d="M343 225V209H332V191H343V174H371V191H383V209H371V225Z" fill="#458864" stroke="#234f4e" stroke-width="5"/>
+<rect x="99" y="213" width="68" height="55" fill="#fff4d1" stroke="#29384e" stroke-width="5"/>
+<rect x="92" y="200" width="82" height="17" fill="#c75f65" stroke="#29384e" stroke-width="5"/>
+<rect x="124" y="239" width="18" height="29" fill="#496f93"/>
+<rect x="107" y="228" width="11" height="12" fill="#83c9d2"/><rect x="148" y="228" width="11" height="12" fill="#83c9d2"/>
+<g transform="translate(255 184)">
+<rect x="12" y="0" width="32" height="10" fill="#cc5f63"/><rect x="2" y="10" width="52" height="10" fill="#cc5f63"/>
+<rect x="12" y="20" width="32" height="12" fill="#f5d6b2"/><rect x="12" y="32" width="32" height="9" fill="#263b53"/>
+<rect x="4" y="41" width="48" height="21" fill="#5687ba"/><rect x="-6" y="44" width="10" height="16" fill="#f5d6b2"/><rect x="52" y="44" width="10" height="16" fill="#f5d6b2"/>
+<rect x="12" y="62" width="13" height="13" fill="#29354b"/><rect x="32" y="62" width="13" height="13" fill="#29354b"/>
+</g>
+<rect x="340" y="37" width="10" height="12" fill="#f8e9ac"/><rect x="350" y="49" width="10" height="10" fill="#f8e9ac"/><rect x="340" y="59" width="10" height="12" fill="#f8e9ac"/><rect x="330" y="49" width="10" height="10" fill="#f8e9ac"/>
+</g><rect x="8" y="8" width="135" height="27" fill="#fff4d1" stroke="#29384e" stroke-width="4"/><text x="17" y="27" font-size="14" font-family="monospace" font-weight="bold" fill="#29384e">KYUSHU · LV.01</text>
+</svg>
+ </div>
+</section>
+
+<section id="world" class="world-section">
+<div class="section-head"><div><div class="eyebrow">WORLD MAP / QUEST SELECT</div><h2>九州冒險地圖</h2></div><p id="quest-count">徽章 0 / 8</p></div>
+<div class="world-map"><div class="world-grid" id="world-grid">
+<button class="world-stop" data-world="0"><span>🏙️</span><strong>01 福岡</strong><small>冒險起點</small></button>
+<button class="world-stop" data-world="1"><span>♨️</span><strong>02 黑川</strong><small>溫泉森林</small></button>
+<button class="world-stop" data-world="2"><span>🌋</span><strong>03 阿蘇</strong><small>火山高原</small></button>
+<button class="world-stop" data-world="3"><span>⛴️</span><strong>04 熊本</strong><small>渡海任務</small></button>
+<button class="world-stop" data-world="4"><span>🌉</span><strong>05 長崎</strong><small>港灣之城</small></button>
+<button class="world-stop" data-world="5"><span>🍵</span><strong>06 嬉野</strong><small>療癒之泉</small></button>
+<button class="world-stop" data-world="6"><span>🌃</span><strong>07 北九州</strong><small>夜景任務</small></button>
+<button class="world-stop" data-world="7"><span>✈️</span><strong>08 福岡</strong><small>冒險完成</small></button>
+</div></div><p class="world-hint">▲ 點選地圖關卡可跳轉到當天行程；完成一天後可領取冒險徽章。</p><div class="badge-shelf" id="badge-shelf"></div>
+</section>
+<section id="flights">
+ <div class="section-head"><div><div class="eyebrow">FLIGHT INFORMATION</div><h2>✈ 啟程補給站</h2></div><p>星宇航空・台灣 ⇄ 福岡</p></div>
+ <div class="grid2">
+  <article class="card flight out">
+   <div class="flight-top"><span class="airline">去程・12/29（二）</span><span class="pill" style="background:var(--pink)">直飛</span></div>
+   <div class="flight-route"><div class="airport"><strong>TPE</strong>台北</div><div class="flight-line"></div><div class="airport" style="text-align:right"><strong>FUK</strong>福岡</div></div>
+   <div class="flight-time">07:45 <span style="color:#9b9185">→</span> 11:00</div>
+   <p class="note">飛行時間約 2 小時 15 分鐘｜星宇航空</p>
+  </article>
+  <article class="card flight back">
+   <div class="flight-top"><span class="airline">回程・1/5（二）</span><span class="pill" style="background:var(--blue)">直飛</span></div>
+   <div class="flight-route"><div class="airport"><strong>FUK</strong>福岡</div><div class="flight-line"></div><div class="airport" style="text-align:right"><strong>TPE</strong>台北</div></div>
+   <div class="flight-time">19:10 <span style="color:#9b9185">→</span> 20:50</div>
+   <p class="note">飛行時間約 2 小時 40 分鐘｜星宇航空</p>
+  </article>
+ </div>
+</section>
+
+<section id="itinerary">
+ <div class="section-head"><div><div class="eyebrow">DAY BY DAY</div><h2>🗺 每日冒險關卡</h2></div><p>選擇關卡，開始今日冒險</p></div>
+ <div class="day-tabs" role="tablist" aria-label="選擇旅行日期" id="day-tabs"></div>
+ <div class="day-panel" id="day-panel" role="tabpanel" aria-live="polite"></div>
+ <p class="smallprint">＊車程為概略估計，冬季山區可能因天候、路況及交通管制而延長。營業時間、渡輪班次及預約請以官方最新公告為準。</p>
+</section>
+
+<section id="stays">
+ <div class="section-head"><div><div class="eyebrow">SWEET DREAMS</div><h2>🏠 旅人休息據點</h2></div><p>已知住宿與待確認項目</p></div>
+ <div class="info-grid">
+  <article class="card stay"><div class="stay-icon">🏙️</div><div><h3>12/29｜福岡・博多</h3><p>旅館／飯店待確認<br>建議住博多站周邊，方便隔天取車。</p></div></article>
+  <article class="card stay"><div class="stay-icon">♨️</div><div><h3>12/30｜黑川溫泉</h3><p>旅館待確認<br>建議選含晚餐方案，留時間享受溫泉街。</p></div></article>
+  <article class="card stay"><div class="stay-icon">🍷</div><div><h3>12/31｜木の実</h3><p><strong>スイス料理＆ワインの宿 木の実</strong><br>已安排住宿・瑞士料理與葡萄酒晚餐。</p></div></article>
+  <article class="card stay"><div class="stay-icon">🌋</div><div><h3>1/1｜雲仙溫泉</h3><p>旅館待確認<br>元旦房價與晚餐時段請優先確認。</p></div></article>
+  <article class="card stay"><div class="stay-icon">🌃</div><div><h3>1/2｜長崎市區</h3><p>飯店待確認<br>建議選擇交通方便、有停車方案的住宿。</p></div></article>
+  <article class="card stay"><div class="stay-icon">🫧</div><div><h3>1/3｜嬉野溫泉</h3><p>旅館待確認<br>可優先比較含早餐或一泊二食方案。</p></div></article>
+  <article class="card stay"><div class="stay-icon">🏙️</div><div><h3>1/4｜福岡・博多</h3><p>飯店待確認<br>建議還車後住博多站附近，晚上搭 JR 前往皿倉山。</p></div></article>
+ </div>
+</section>
+
+<section id="todos">
+ <div class="section-head"><div><div class="eyebrow">BEFORE YOU GO</div><h2>📜 出發任務清單</h2></div><p>勾選後會自動記住進度</p></div>
+ <div class="card">
+  <div class="progress-label" id="todo-progress-label">完成 0 / 10 項</div><div class="progress"><span id="todo-progress"></span></div>
+  <div class="checklist" id="todo-list">
+   <label class="checkrow"><input type="checkbox"><span class="checktext">確認 7 晚住宿與入住時間（特別是黑川、雲仙元旦房況）</span></label>
+   <label class="checkrow"><input type="checkbox"><span class="checktext">預約租車，確認 12/30 取車、1/4 福岡還車</span></label>
+   <label class="checkrow"><input type="checkbox"><span class="checktext">租車指定四輪雪胎（スタッドレスタイヤ），確認雪鏈</span></label>
+   <label class="checkrow"><input type="checkbox"><span class="checktext">確認 1/1 熊本港 → 島原港渡輪元旦班表與汽車預約</span></label>
+   <label class="checkrow"><input type="checkbox"><span class="checktext">確認渡輪報到截止時間，預留至少 30 分鐘以上</span></label>
+   <label class="checkrow"><input type="checkbox"><span class="checktext">確認阿蘇神社、熊本城、雲仙地獄及太宰府年末年初開放</span></label>
+   <label class="checkrow"><input type="checkbox"><span class="checktext">確認皿倉山纜車 1/4 營運與 JR 八幡站接駁時刻</span></label>
+   <label class="checkrow"><input type="checkbox"><span class="checktext">下載日本離線地圖、租車導航資料與翻譯工具</span></label>
+   <label class="checkrow"><input type="checkbox"><span class="checktext">確認旅遊保險、信用卡海外交易與駕照日文譯本／國際駕照需求</span></label>
+   <label class="checkrow"><input type="checkbox"><span class="checktext">出發前查看阿蘇、黑川、雲仙沿線降雪、結冰與道路管制</span></label>
+  </div>
+ </div>
+</section>
+
+<section id="packing">
+ <div class="section-head"><div><div class="eyebrow">PACKING LIST</div><h2>🎒 冒險背包</h2></div><p>依冬季九州旅行準備</p></div>
+ <div class="two-col">
+  <article class="card">
+   <h3>👕 衣物與保暖</h3><div class="checklist">
+    <label class="checkrow"><input type="checkbox"><span class="checktext">厚外套／羽絨外套</span></label>
+    <label class="checkrow"><input type="checkbox"><span class="checktext">發熱衣、毛衣與保暖褲</span></label>
+    <label class="checkrow"><input type="checkbox"><span class="checktext">圍巾、手套、毛帽</span></label>
+    <label class="checkrow"><input type="checkbox"><span class="checktext">好走、防滑的鞋子與厚襪</span></label>
+    <label class="checkrow"><input type="checkbox"><span class="checktext">換洗衣物、睡衣與內衣褲</span></label>
+   </div>
+  </article>
+  <article class="card">
+   <h3>📱 重要物品</h3><div class="checklist">
+    <label class="checkrow"><input type="checkbox"><span class="checktext">護照、機票與住宿資料</span></label>
+    <label class="checkrow"><input type="checkbox"><span class="checktext">台灣駕照、日文譯本／國際駕照（依租車要求）</span></label>
+    <label class="checkrow"><input type="checkbox"><span class="checktext">手機、充電器、行動電源</span></label>
+    <label class="checkrow"><input type="checkbox"><span class="checktext">日本 SIM／eSIM 與網路設定</span></label>
+    <label class="checkrow"><input type="checkbox"><span class="checktext">信用卡、日圓現金與交通 IC 卡</span></label>
+   </div>
+  </article>
+  <article class="card">
+   <h3>🧴 盥洗與日常</h3><div class="checklist">
+    <label class="checkrow"><input type="checkbox"><span class="checktext">個人藥品、暈車藥、OK 繃</span></label>
+    <label class="checkrow"><input type="checkbox"><span class="checktext">保養品、乳液、護唇膏</span></label>
+    <label class="checkrow"><input type="checkbox"><span class="checktext">牙刷、隱形眼鏡用品</span></label>
+    <label class="checkrow"><input type="checkbox"><span class="checktext">折疊傘、暖暖包、口罩</span></label>
+    <label class="checkrow"><input type="checkbox"><span class="checktext">環保袋、購物袋與小背包</span></label>
+   </div>
+  </article>
+  <article class="card">
+   <h3>🚗 自駕與溫泉小物</h3><div class="checklist">
+    <label class="checkrow"><input type="checkbox"><span class="checktext">租車預約資料、ETC／高速公路方案確認</span></label>
+    <label class="checkrow"><input type="checkbox"><span class="checktext">手機車架、車充與傳輸線</span></label>
+    <label class="checkrow"><input type="checkbox"><span class="checktext">小毛巾、溫泉換洗袋</span></label>
+    <label class="checkrow"><input type="checkbox"><span class="checktext">防水袋與裝濕衣物的收納袋</span></label>
+    <label class="checkrow"><input type="checkbox"><span class="checktext">保溫瓶與車上零食／飲水</span></label>
+   </div>
+  </article>
+ </div>
+</section>
+
+<div class="callout">☃️ <strong>冬季自駕提醒：</strong>阿蘇、黑川、九重與雲仙山區可能降雪或結冰。請務必確認雪胎、雪鏈及即時道路管制；若遇惡劣天候，安全優先，彈性取消山區景點。</div>
+<footer class="footer"><div class="sun">☀️</div>每一站風景，都是冒險的珍貴紀錄。<br>KYUSHU PIXEL QUEST · 2026–2027</footer>
+</main>
+<script>
+const days = [
+ {date:"12/29",dow:"週二",title:"福岡市區・抵達九州",stay:"住宿｜福岡・博多",art:"fukuoka",events:[
+  ["11:00","抵達福岡機場","星宇航空抵達，搭地鐵前往博多站寄放行李。",["飛機","地鐵"]],
+  ["12:30","博多拉麵午餐","先吃一碗熱騰騰的博多豚骨拉麵，開啟旅程。",["步行"]],
+  ["14:00","運河城、櫛田神社","逛運河城，再到櫛田神社散步參拜。",["步行"]],
+  ["16:30","大濠公園","在湖畔走走，享受抵達日的悠閒時光。",["地鐵","步行"]],
+  ["晚上","回博多休息","整理行李，為隔天取車與長途移動做準備。",["地鐵"]]
+ ]},
+ {date:"12/30",dow:"週三",title:"福岡 → 由布院 → 黑川溫泉",stay:"住宿｜黑川溫泉",art:"onsen",events:[
+  ["上午","博多取車","取車並確認雪胎、雪鏈、ETC 與導航設定。",["租車"]],
+  ["約 11:00","由布院散策","金鱗湖、湯之坪街道與午餐；建議停留約 2.5–3 小時。",["自駕","必去"]],
+  ["14:00","出發前往黑川","山區車程視天候約 1.5 小時以上，預留彈性。",["自駕"]],
+  ["15:30–16:00","抵達黑川溫泉","辦理入住、稍作休息，使用入湯手形泡露天風呂。",["自駕","溫泉","必去"]],
+  ["晚上","旅館晚餐與泡湯","建議選擇含晚餐住宿，放慢步調享受溫泉。",["步行"]]
+ ]},
+ {date:"12/31",dow:"週四",title:"黑川 → 阿蘇 → 木の実",stay:"住宿｜スイス料理＆ワインの宿 木の実（已安排）",art:"aso",events:[
+  ["早上","黑川溫泉晨湯","早餐後享受最後一段溫泉時光，退房出發。",["步行"]],
+  ["上午","阿蘇大觀峰","眺望阿蘇五岳與火山地形，視天候決定停留時間。",["自駕","必去"]],
+  ["中午","草千里與赤牛丼","草千里散步、享用阿蘇赤牛料理；火山口是否開放視管制。",["自駕","必去"]],
+  ["15:00–16:00","入住木の実","建議提早抵達；依原先資訊最晚入住時間為 18:00。",["自駕"]],
+  ["晚上","瑞士料理與葡萄酒","在木の実享用晚餐，迎接新年。",["住宿"]]
+ ]},
+ {date:"1/1",dow:"週五",title:"南阿蘇 → 熊本 → 渡輪 → 雲仙",stay:"住宿｜雲仙溫泉",art:"ferry",events:[
+  ["早上","阿蘇神社初詣","新年參拜；元旦人潮可能較多，預留停車與排隊時間。",["自駕","必去"]],
+  ["上午","熊本城、城彩苑","參觀熊本地標；元旦開放時間須事先確認。",["自駕","必去"]],
+  ["中午","前往熊本港","午餐簡單安排，盡量提早抵達港口。",["自駕"]],
+  ["目標約 14:50","熊本港 → 島原港","搭乘汽車渡輪，務必以 2027 元旦官方班表及報到時間為準。",["渡輪","必去"]],
+  ["下午","島原 → 雲仙","下船後開車上山前往雲仙旅館；冬季山路需特別小心。",["自駕"]]
+ ]},
+ {date:"1/2",dow:"週六",title:"雲仙 → 長崎",stay:"住宿｜長崎市區",art:"nagasaki",events:[
+  ["上午","雲仙地獄","欣賞蒸氣地景與溫泉街風貌，注意步道濕滑。",["步行","必去"]],
+  ["中午","前往長崎市區","車程約 1.5 小時上下，依路況調整。",["自駕"]],
+  ["下午","出島、眼鏡橋","漫步長崎歷史街區，感受港町風情。",["步行","必去"]],
+  ["傍晚","稻佐山夜景","視天候搭乘纜車或接駁交通上山賞夜景。",["大眾運輸","必去"]],
+  ["晚上","長崎市區晚餐","可品嚐長崎強棒麵或皿烏龍。",["步行"]]
+ ]},
+ {date:"1/3",dow:"週日",title:"長崎 → 嬉野溫泉",stay:"住宿｜嬉野溫泉",art:"ureshino",events:[
+  ["上午","平和公園、原爆資料館","依開放時間參觀，建議先確認新年期間營業安排。",["步行","必去"]],
+  ["中午","前往嬉野溫泉","開車約 1.5 小時上下，途中安排休息。",["自駕"]],
+  ["下午（可選）","武雄神社、武雄溫泉樓門","若時間與體力充裕，可順路停留；不想趕行程就直接去嬉野。",["自駕"]],
+  ["傍晚","嬉野溫泉入住","享受嬉野溫泉與旅館晚餐，放鬆休息。",["自駕","溫泉","必去"]]
+ ]},
+ {date:"1/4",dow:"週一",title:"嬉野 → 太宰府 → 福岡 → 皿倉山",stay:"住宿｜福岡・博多",art:"night",events:[
+  ["上午","嬉野出發、前往太宰府","初詣期間人潮多，停車與交通請預留緩衝。",["自駕"]],
+  ["中午","太宰府天滿宮","參拜、逛表參道、品嚐梅枝餅。",["步行","必去"]],
+  ["下午","返回福岡、還車入住","建議先完成還車與入住，晚上改搭大眾運輸。",["自駕"]],
+  ["傍晚","博多 → JR 八幡站","搭 JR 前往北九州，再轉免費接駁巴士至皿倉山山麓站。",["JR","接駁巴士"]],
+  ["晚上","皿倉山夜景","搭纜車與斜坡車上山欣賞北九州夜景；先確認當日營運。",["纜車","必去"]]
+ ]},
+ {date:"1/5",dow:"週二",title:"福岡 → 台灣・平安返家",stay:"返程｜福岡機場",art:"plane",events:[
+  ["上午","博多站伴手禮採買","採買明太子、博多通饅頭等伴手禮，留意冷藏品保存。",["步行"]],
+  ["中午","午餐、整理行李","預留回飯店取行李與前往機場的時間。",["步行"]],
+  ["17:00 前","抵達福岡機場","辦理報到、托運與出境手續。",["地鐵"]],
+  ["19:10","星宇航空起飛","福岡直飛台北，預計 20:50 抵達。",["飛機"]]
+ ]}
+];
+const artMap = {
+ fukuoka:`<svg viewBox="0 0 110 85" aria-hidden="true"><path d="M8 72V35L35 18L62 35V72Z" fill="#F6D27A" stroke="#3E3A39" stroke-width="3"/><path d="M62 72V27H99V72Z" fill="#A8D3E6" stroke="#3E3A39" stroke-width="3"/><path d="M17 44H53M17 54H53M72 40H89M72 52H89" stroke="#3E3A39" stroke-width="3"/><path d="M6 73H104" stroke="#3E3A39" stroke-width="3"/></svg>`,
+ onsen:`<svg viewBox="0 0 110 85" aria-hidden="true"><path d="M12 70Q5 48 25 45Q42 34 52 48Q76 31 91 50Q106 63 96 73Z" fill="#A8D3E6" stroke="#3E3A39" stroke-width="3"/><path d="M29 41Q17 27 31 17M55 39Q43 23 58 10M79 40Q68 24 82 14" fill="none" stroke="#3E3A39" stroke-width="3" stroke-linecap="round"/><path d="M8 73H102" stroke="#3E3A39" stroke-width="3"/></svg>`,
+ aso:`<svg viewBox="0 0 110 85" aria-hidden="true"><path d="M5 73L37 23L57 48L77 12L106 73Z" fill="#B9DAA5" stroke="#3E3A39" stroke-width="3"/><path d="M26 40L37 23L47 36M67 29L77 12L89 34" fill="none" stroke="#fff" stroke-width="5"/><path d="M20 72Q45 57 61 70T101 68" fill="none" stroke="#3E3A39" stroke-width="3"/></svg>`,
+ ferry:`<svg viewBox="0 0 110 85" aria-hidden="true"><path d="M9 52H100L87 70H26Z" fill="#F2A497" stroke="#3E3A39" stroke-width="3"/><path d="M34 51V25H76V51M43 25V16H67V25" fill="#fff" stroke="#3E3A39" stroke-width="3"/><path d="M8 77Q22 70 36 77T64 77T96 77" fill="none" stroke="#3E3A39" stroke-width="3"/><circle cx="52" cy="39" r="5" fill="#A8D3E6"/></svg>`,
+ nagasaki:`<svg viewBox="0 0 110 85" aria-hidden="true"><path d="M8 72V44L28 30L48 44V72M48 72V32L70 18L93 32V72" fill="#F6D27A" stroke="#3E3A39" stroke-width="3"/><path d="M19 52H37M59 45H82M59 56H82" stroke="#3E3A39" stroke-width="3"/><path d="M5 73H104" stroke="#3E3A39" stroke-width="3"/></svg>`,
+ ureshino:`<svg viewBox="0 0 110 85" aria-hidden="true"><path d="M17 65Q7 48 25 39Q44 25 60 42Q80 26 95 46Q105 63 91 72H25Z" fill="#B9DAA5" stroke="#3E3A39" stroke-width="3"/><path d="M34 39Q23 24 37 12M58 36Q48 20 62 8M79 39Q70 24 83 14" fill="none" stroke="#3E3A39" stroke-width="3" stroke-linecap="round"/><path d="M12 73H98" stroke="#3E3A39" stroke-width="3"/></svg>`,
+ night:`<svg viewBox="0 0 110 85" aria-hidden="true"><path d="M7 72L25 45L42 59L62 28L103 72Z" fill="#A8D3E6" stroke="#3E3A39" stroke-width="3"/><path d="M18 68L22 60M37 68L41 62M66 66L70 55M84 68L89 57" stroke="#F6D27A" stroke-width="5"/><circle cx="83" cy="15" r="9" fill="#F6D27A" stroke="#3E3A39" stroke-width="3"/></svg>`,
+ plane:`<svg viewBox="0 0 110 85" aria-hidden="true"><path d="M9 48L47 40L56 10Q60 5 64 12L62 38L97 31Q105 31 102 38L63 53L55 75L48 76L48 57L15 64Z" fill="#F2A497" stroke="#3E3A39" stroke-width="3" stroke-linejoin="round"/><path d="M9 78H101" stroke="#3E3A39" stroke-width="3" stroke-dasharray="5 5"/></svg>`
+};
+const spotNotes = {
+ "運河城、櫛田神社": [
+  [
+   "博多運河城",
+   "結合商店、餐廳與娛樂設施的大型複合空間，適合抵達當天輕鬆逛逛。"
+  ],
+  [
+   "櫛田神社",
+   "博多的重要神社，以與博多祇園山笠祭典的深厚淵源聞名。"
+  ]
+ ],
+ "大濠公園": [
+  [
+   "大濠公園",
+   "以大片池塘為中心的城市公園，環湖步道很適合散步、拍照與休息。"
+  ]
+ ],
+ "由布院散策": [
+  [
+   "金鱗湖",
+   "由布院代表性的湖泊，湖畔林木與遠山相映，冬季清晨有時能看到水面晨霧。"
+  ],
+  [
+   "湯之坪街道",
+   "連接由布院車站周邊與金鱗湖的熱門散策街區，有甜點、雜貨和在地小店。"
+  ]
+ ],
+ "抵達黑川溫泉": [
+  [
+   "黑川溫泉",
+   "位於熊本山間的溫泉鄉，保留質樸的旅館街景；可利用入湯手形體驗不同旅館的露天湯。"
+  ]
+ ],
+ "黑川溫泉晨湯": [
+  [
+   "黑川溫泉",
+   "河谷與山林環繞的溫泉小鎮，適合在離開前放慢腳步享受晨間泡湯。"
+  ]
+ ],
+ "阿蘇大觀峰": [
+  [
+   "大觀峰",
+   "阿蘇北外輪山上的觀景地，可俯瞰阿蘇破火山口地形與阿蘇五岳；視野取決於天氣。"
+  ]
+ ],
+ "草千里與赤牛丼": [
+  [
+   "草千里之濱",
+   "阿蘇火山區的開闊草原與池塘景觀，冬季也能欣賞遼闊的火山地形。"
+  ],
+  [
+   "阿蘇赤牛丼",
+   "阿蘇地區的代表性料理，以當地赤牛製成，常見搭配米飯的赤牛丼。"
+  ]
+ ],
+ "入住木の実": [
+  [
+   "木の実",
+   "南阿蘇的住宿據點，這晚已安排瑞士料理與葡萄酒，可在旅館好好享受跨年夜。"
+  ]
+ ],
+ "阿蘇神社初詣": [
+  [
+   "阿蘇神社",
+   "位於阿蘇市的古老神社，也是當地重要信仰中心；新年初詣氛圍濃厚。"
+  ]
+ ],
+ "熊本城、城彩苑": [
+  [
+   "熊本城",
+   "日本著名的歷史城郭，以黑白對比的城樓與雄偉石垣聞名。"
+  ],
+  [
+   "櫻之馬場 城彩苑",
+   "位於熊本城旁的觀光設施，可認識在地歷史文化並品嚐熊本名物。"
+  ]
+ ],
+ "熊本港 → 島原港": [
+  [
+   "有明海汽車渡輪",
+   "搭船橫越有明海連接熊本與島原，汽車可隨船運送；班次、車位及報到規定需另行確認。"
+  ]
+ ],
+ "雲仙地獄": [
+  [
+   "雲仙地獄",
+   "雲仙溫泉的代表性地熱區，步道旁可見白色蒸氣與硫磺地貌，充滿火山氣息。"
+  ]
+ ],
+ "出島、眼鏡橋": [
+  [
+   "出島",
+   "江戶時代日本對外貿易的重要窗口之一，現設有歷史街區與復原建築。"
+  ],
+  [
+   "眼鏡橋",
+   "橫跨中島川的石拱橋，橋身與水面倒影相映時，形狀宛如眼鏡。"
+  ]
+ ],
+ "稻佐山夜景": [
+  [
+   "稻佐山",
+   "長崎著名的夜景觀賞地，能從高處欣賞港灣、山坡與城市燈火。"
+  ]
+ ],
+ "平和公園、原爆資料館": [
+  [
+   "長崎平和公園",
+   "以祈願和平為主題的公園，設有和平祈念像等紀念設施。"
+  ],
+  [
+   "長崎原爆資料館",
+   "透過史料與展覽認識 1945 年長崎原爆的經過、影響與和平意義。"
+  ]
+ ],
+ "武雄神社、武雄溫泉樓門": [
+  [
+   "武雄神社",
+   "位於佐賀武雄的神社，周邊自然環境清幽，附近以巨大的古樹景觀聞名。"
+  ],
+  [
+   "武雄溫泉樓門",
+   "武雄溫泉的象徵性朱紅色建築，設計典雅，是溫泉街的代表地標。"
+  ]
+ ],
+ "嬉野溫泉入住": [
+  [
+   "嬉野溫泉",
+   "佐賀縣歷史悠久的溫泉鄉，以滑順泉質與嬉野茶、溫泉湯豆腐等在地特色聞名。"
+  ]
+ ],
+ "太宰府天滿宮": [
+  [
+   "太宰府天滿宮",
+   "供奉學問之神菅原道真的神社，是九州知名參拜勝地；表參道可品嚐梅枝餅。"
+  ]
+ ],
+ "皿倉山夜景": [
+  [
+   "皿倉山",
+   "位於北九州市的觀景名山，山頂能遠眺市區與工業港灣交織的夜景。"
+  ]
+ ]
+};
+const mapQueries = {"博多運河城":"キャナルシティ博多 福岡市","櫛田神社":"櫛田神社 福岡市博多区","大濠公園":"大濠公園 福岡市","金鱗湖":"金鱗湖 由布市","湯之坪街道":"湯の坪街道 由布院","黑川溫泉":"黒川温泉 熊本県南小国町","大觀峰":"大観峰 阿蘇市","草千里之濱":"草千里ヶ浜 阿蘇市","阿蘇赤牛丼":"草千里ヶ浜 阿蘇市","木の実":"スイス料理＆ワインの宿 木の実 南阿蘇村","阿蘇神社":"阿蘇神社 熊本県阿蘇市","熊本城":"熊本城 熊本市","櫻之馬場 城彩苑":"桜の馬場 城彩苑 熊本市","有明海汽車渡輪":"熊本フェリー 熊本港 ターミナル","雲仙地獄":"雲仙地獄 雲仙市","出島":"出島 長崎市","眼鏡橋":"眼鏡橋 長崎市","稻佐山":"稲佐山展望台 長崎市","長崎平和公園":"平和公園 長崎市","長崎原爆資料館":"長崎原爆資料館 長崎市","武雄神社":"武雄神社 佐賀県武雄市","武雄溫泉樓門":"武雄温泉楼門 武雄市","嬉野溫泉":"嬉野温泉 佐賀県嬉野市","太宰府天滿宮":"太宰府天満宮 太宰府市","皿倉山":"皿倉山ケーブルカー 山麓駅 北九州市"};
+const eventLocations = {"抵達福岡機場":"福岡空港 国際線ターミナル","博多拉麵午餐":"博多駅 福岡市","回博多休息":"博多駅 福岡市","博多取車":"博多駅 福岡市","出發前往黑川":"黒川温泉 熊本県南小国町","旅館晚餐與泡湯":"黒川温泉 熊本県南小国町","瑞士料理與葡萄酒":"スイス料理＆ワインの宿 木の実 南阿蘇村","前往熊本港":"熊本港 フェリーターミナル","島原 → 雲仙":"雲仙温泉 雲仙市","前往長崎市區":"長崎駅 長崎市","長崎市區晚餐":"長崎駅 長崎市","前往嬉野溫泉":"嬉野温泉 佐賀県嬉野市","嬉野出發、前往太宰府":"太宰府天満宮 太宰府市","返回福岡、還車入住":"博多駅 福岡市","博多 → JR 八幡站":"八幡駅 北九州市","博多站伴手禮採買":"博多駅 福岡市","午餐、整理行李":"博多駅 福岡市","星宇航空起飛":"福岡空港 国際線ターミナル"};
+function mapsDirections(query,travelmode="driving"){
+ return "https://www.google.com/maps/dir/?api=1&destination="+encodeURIComponent(query)+"&travelmode="+travelmode;
+}
+function mapButton(query,label="Google Maps 導航",travelmode="driving",className="map-link"){
+ return '<a class="'+className+'" href="'+mapsDirections(query,travelmode)+'" target="_blank" rel="noopener noreferrer" aria-label="'+label+'（開啟 Google Maps 路線規劃）">📍 '+label+' ↗</a>';
+}
+
+const dailyRoutes = [[{"label":"市區散策路線（大眾運輸／步行）","mode":"transit","stops":["博多駅 福岡市","キャナルシティ博多 福岡市","櫛田神社 福岡市博多区","大濠公園 福岡市"],"note":"福岡抵達日不取車；市區景點間請依現場情況選擇步行或地鐵。"}],[{"label":"今日完整自駕路線","mode":"driving","stops":["博多駅 福岡市","金鱗湖 由布市","湯の坪街道 由布院","黒川温泉 熊本県南小国町"],"note":"由布院街區建議停車後步行；黑川溫泉山路冬季可能積雪。"}],[{"label":"今日完整自駕路線","mode":"driving","stops":["黒川温泉 熊本県南小国町","大観峰 阿蘇市","草千里ヶ浜 阿蘇市","スイス料理＆ワインの宿 木の実 南阿蘇村"],"note":"下午入住木の実，請依山區道路及天候狀況調整停留。"}],[{"label":"第一段：南阿蘇 → 熊本港","mode":"driving","stops":["スイス料理＆ワインの宿 木の実 南阿蘇村","阿蘇神社 熊本県阿蘇市","熊本城 熊本市","桜の馬場 城彩苑 熊本市","熊本港 フェリーターミナル"],"note":"元旦參拜與熊本城附近可能壅塞；務必預留渡輪汽車報到時間。"},{"label":"第二段：島原港 → 雲仙溫泉","mode":"driving","stops":["島原港 フェリーターミナル 長崎県島原市","雲仙温泉 長崎県雲仙市"],"note":"兩段間需搭汽車渡輪（不屬道路導航）；請自行確認 2027/1/1 航班及車位。"}],[{"label":"今日完整自駕路線","mode":"driving","stops":["雲仙温泉 長崎県雲仙市","雲仙地獄 雲仙市","出島 長崎市","眼鏡橋 長崎市","長崎駅 長崎市"],"note":"長崎市區停車後建議步行遊覽；稻佐山夜景請依纜車營運安排接駁。"},{"label":"夜景交通：長崎市區 → 纜車站","mode":"transit","stops":["長崎駅 長崎市","長崎ロープウェイ 淵神社駅 長崎市"],"note":"這段提供大眾運輸方向，實際接駁與纜車營運請先確認。"}],[{"label":"第一段：長崎市區參觀","mode":"driving","stops":["長崎駅 長崎市","平和公園 長崎市","長崎原爆資料館 長崎市"],"note":"平和公園與資料館相距不遠，建議停車後步行。"},{"label":"第二段：長崎 → 武雄 → 嬉野","mode":"driving","stops":["長崎原爆資料館 長崎市","武雄神社 武雄市","武雄温泉楼門 武雄市","嬉野温泉 嬉野市"],"note":"武雄兩站為可選行程，若想悠閒泡湯可直接前往嬉野。"},{"label":"精簡路線（略過武雄）","mode":"driving","stops":["長崎原爆資料館 長崎市","嬉野温泉 嬉野市"],"note":"適合想減少移動、提早入住溫泉旅館時使用。"}],[{"label":"今日自駕路線（還車前）","mode":"driving","stops":["嬉野温泉 嬉野市","太宰府天満宮 太宰府市","博多駅 福岡市"],"note":"博多站僅作為還車區域參考，實際還車請以租車公司指定店址為準。"},{"label":"還車後：博多 → JR 八幡站","mode":"transit","stops":["博多駅 福岡市","八幡駅 北九州市"],"note":"到八幡站後再依當日接駁資訊前往皿倉山纜車山麓站；纜車及接駁需另行確認。"}],[{"label":"返程：博多 → 福岡機場","mode":"transit","stops":["博多駅 福岡市","福岡空港 国際線ターミナル"],"note":"福岡機場國內線與國際線航廈交通需注意，預留接駁與報到時間。"}]];
+function fullRouteUrl(route){
+ const p=new URLSearchParams({api:"1",origin:route.stops[0],destination:route.stops[route.stops.length-1],travelmode:route.mode});
+ if(route.stops.length>2)p.set("waypoints",route.stops.slice(1,-1).join("|"));
+ return "https://www.google.com/maps/dir/?"+p.toString();
+}
+function renderDailyRoutes(index){
+ const sections=dailyRoutes[index]||[];
+ return '<section class="day-route-card" aria-label="當日完整路線"><h4>🗺️ 當日完整路線</h4>'+
+ sections.map(route=>'<div class="day-route-item"><strong>'+route.label+'</strong><div class="day-route-order">'+route.stops.map((st,i)=>(i+1)+'. '+st).join(' → ')+'</div><a class="day-route-btn" href="'+fullRouteUrl(route)+'" target="_blank" rel="noopener noreferrer">🧭 在 Google Maps 開啟完整路線 ↗</a><p class="day-route-hint">'+route.note+'</p></div>').join("")+
+ '<p class="day-route-hint">＊Google Maps 的路線可能因即時路況、交通工具及裝置而調整；開啟後請核對所有停靠點與順序。</p></section>';
+}
+function renderDays(){
+ const tabs=document.getElementById("day-tabs");
+ days.forEach((d,i)=>{
+  const b=document.createElement("button");b.className="day-tab";b.type="button";b.role="tab";b.id="tab-"+i;b.setAttribute("aria-controls","day-panel");b.setAttribute("aria-selected",i===0?"true":"false");
+  b.innerHTML=`<span>DAY ${i+1}・${d.dow}</span><strong>${d.date}</strong>`;
+  b.addEventListener("click",()=>showDay(i));tabs.appendChild(b);
+ });
+ showDay(0);
+}
+function showDay(index){
+ const d=days[index],panel=document.getElementById("day-panel");
+ document.querySelectorAll(".day-tab").forEach((b,i)=>{b.setAttribute("aria-selected",i===index?"true":"false");b.tabIndex=i===index?0:-1});
+ panel.innerHTML=`<div class="day-title"><div><h3>Day ${index+1}｜${d.title}</h3><p>${d.stay}</p></div><div class="day-illustration">${artMap[d.art]}</div></div>${renderDailyRoutes(index)}<div class="timeline">${d.events.map(e=>`<div class="event"><time>${e[0]}</time><h4>${e[1]}</h4><p>${e[2]}</p>${eventLocations[e[1]]?`<div class="event-map">${mapButton(eventLocations[e[1]],"前往此地導航")}</div>`:""}${(spotNotes[e[1]]||[]).length?`<div class="spot-notes">${spotNotes[e[1]].map(([name,description])=>`<div class="spot-note"><strong>📍 ${name}</strong><p>${description}</p>${mapQueries[name]?mapButton(mapQueries[name]):""}</div>`).join("")}</div>`:""}<div class="tags">${e[3].map(t=>`<span class="tag ${t==="必去"?"must":(["自駕","租車"].includes(t)?"car":(["步行","溫泉","住宿"].includes(t)?"walk":(["渡輪"].includes(t)?"ferry":"train")))}">${t==="必去"?"★ ":""}${t}</span>`).join("")}</div></div>`).join("")}</div>`;
+ panel.animate?.([{opacity:.5,transform:"translateY(7px) scale(.99)"},{opacity:1,transform:"translateY(0) scale(1)"}],{duration:260,easing:"ease-out"});
+}
+renderDays();
+const start=new Date("2026-12-29T07:45:00+08:00");
+function updateCountdown(){
+ const now=new Date(),diff=start-now;
+ if(diff<=0){document.getElementById("count-label").textContent="旅程開始了！祝你一路平安 ☀️";["days","hours","minutes"].forEach(id=>document.getElementById(id).textContent="0");return}
+ const d=Math.floor(diff/86400000),h=Math.floor(diff%86400000/3600000),m=Math.floor(diff%3600000/60000);
+ document.getElementById("days").textContent=d;document.getElementById("hours").textContent=h;document.getElementById("minutes").textContent=m;
+}
+updateCountdown();setInterval(updateCountdown,60000);
+function setupChecks(){
+ document.querySelectorAll(".checklist").forEach((list,li)=>{
+  [...list.querySelectorAll("input[type=checkbox]")].forEach((box,i)=>{
+   const key=`kyushu-trip-${li}-${i}`;
+   try{box.checked=localStorage.getItem(key)==="1"}catch(e){}
+   box.addEventListener("change",()=>{try{localStorage.setItem(key,box.checked?"1":"0")}catch(e){};updateProgress()});
+  });
+ });
+ updateProgress();
+}
+function updateProgress(){
+ const boxes=[...document.querySelectorAll("#todo-list input")],done=boxes.filter(b=>b.checked).length;
+ document.getElementById("todo-progress").style.width=(done/boxes.length*100)+"%";
+ document.getElementById("todo-progress-label").textContent=`完成 ${done} / ${boxes.length} 項`;
+}
+setupChecks();
+</script>
+
+<script id="pixel-quest-interactions">
+const questNames=["福岡起點","黑川溫泉","阿蘇高原","渡海雲仙","長崎港灣","嬉野療癒","北九州夜景","福岡返航"];
+function isQuestComplete(i){try{return localStorage.getItem("kyushu-pixel-quest-day-"+i)==="yes"}catch(e){return false}}
+function questUpdate(){
+ let total=0;
+ document.querySelectorAll(".world-stop").forEach((b,i)=>{const yes=isQuestComplete(i);total+=yes?1:0;b.classList.toggle("cleared",yes);b.setAttribute("aria-label","DAY "+(i+1)+" "+questNames[i]+(yes?" 已取得徽章":" 未取得徽章"))});
+ document.getElementById("quest-count").textContent="徽章 "+total+" / 8";
+ document.getElementById("badge-shelf").innerHTML=questNames.map((name,i)=>'<span class="quest-badge '+(isQuestComplete(i)?"earned":"")+'">'+(isQuestComplete(i)?"★ ":"◇ ")+(i+1)+" "+name+"</span>").join("");
+}
+const originalShowDay=showDay;
+showDay=function(i){
+ originalShowDay(i);
+ document.querySelectorAll(".world-stop").forEach((b,n)=>b.classList.toggle("active",n===i));
+ const panel=document.getElementById("day-panel");
+ const q=document.createElement("div");q.className="quest-complete";
+ const p=document.createElement("p");p.textContent="★ 完成今日冒險，即可收集 DAY "+(i+1)+" 徽章";
+ const b=document.createElement("button");b.type="button";b.setAttribute("aria-pressed",isQuestComplete(i)?"true":"false");b.textContent=isQuestComplete(i)?"★ 已取得徽章":"☆ 領取冒險徽章";
+ b.addEventListener("click",()=>{try{const next=!isQuestComplete(i);localStorage.setItem("kyushu-pixel-quest-day-"+i,next?"yes":"no")}catch(e){}b.setAttribute("aria-pressed",isQuestComplete(i)?"true":"false");b.textContent=isQuestComplete(i)?"★ 已取得徽章":"☆ 領取冒險徽章";questUpdate()});
+ q.append(p,b);panel.appendChild(q);
+};
+document.querySelectorAll(".world-stop").forEach((b,i)=>b.addEventListener("click",()=>{showDay(i);document.getElementById("itinerary").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"})}));
+questUpdate();showDay(0);
+</script>
+</body>
+</html>
